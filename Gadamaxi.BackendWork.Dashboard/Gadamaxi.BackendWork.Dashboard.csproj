@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <Description>Gadamaxi.BackendWork 监控控制面板：内嵌 DLL 的 Web 面板 + 共享宿主鉴权的 HTTP API</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gadamaxi.BackendWork\Gadamaxi.BackendWork.csproj" />
+    <!-- 注意：本包只依赖核心库（抽象层）。IDashboardRepository 的具体实现在
+         Gadamaxi.BackendWork.Sql 等存储包中，由存储包反向引用本包并注册。 -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 前端构建产物（dashboard-ui/dist → wwwroot）以嵌入资源打进程序集；
+         wwwroot 不存在或为空时由占位页兜底，保证 DLL 始终可用 -->
+    <EmbeddedResource Include="wwwroot\**\*" />
+  </ItemGroup>
+
+</Project>

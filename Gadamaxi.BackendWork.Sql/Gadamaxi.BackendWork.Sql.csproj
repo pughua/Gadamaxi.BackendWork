@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <!-- netstandard2.1 默认 C# 8，Dashboard 仓储等新语法需要显式提升（与核心库同口径） -->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator.Runner" Version="8.0.1" />
+    <PackageReference Include="linq2db" Version="6.5.0" />
+    <PackageReference Include="linq2db.MySql" Version="6.5.0" />
+    <PackageReference Include="linq2db.SQLite" Version="6.5.0" />
+    <PackageReference Include="linq2db.SqlServer" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gadamaxi.BackendWork\Gadamaxi.BackendWork.csproj" />
+  </ItemGroup>
+
+</Project>

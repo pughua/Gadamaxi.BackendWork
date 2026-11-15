@@ -1,0 +1,156 @@
+@page
+@model WebApplicationTest.Pages.DemoTasksModel
+@{
+    ViewData["Title"] = "后台任务演示";
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; margin: 24px; color: #24292f; }
+        h1 { font-size: 22px; } h2 { font-size: 16px; margin-top: 0; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1100px; }
+        .card { border: 1px solid #d0d7de; border-radius: 8px; padding: 16px; background: #f6f8fa; }
+        label { display: block; font-size: 13px; margin: 8px 0 2px; color: #57606a; }
+        input, select { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid #d0d7de; border-radius: 4px; }
+        button { margin-top: 12px; padding: 7px 16px; border: 0; border-radius: 6px; background: #0969da; color: #fff; cursor: pointer; }
+        button:hover { background: #0757ba; }
+        .feedback { max-width: 1100px; margin: 12px 0; padding: 10px 14px; border-radius: 6px; font-size: 14px; }
+        .ok { background: #dafbe1; border: 1px solid #aceebb; }
+        .err { background: #ffebe9; border: 1px solid #ffcecb; }
+        .log { max-width: 1100px; border: 1px solid #d0d7de; border-radius: 8px; padding: 12px 16px; background: #0d1117; color: #c9d1d9;
+               font-family: Consolas, monospace; font-size: 13px; min-height: 120px; white-space: pre-wrap; }
+        a { color: #0969da; }
+    </style>
+</head>
+<body>
+    <h1>后台任务演示</h1>
+    <p>创建各类后台任务验证框架能力；任务由本宿主的工作进程实际执行，执行记录见底部日志。
+       <a href="/backendwork-dashboard">打开监控面板 →</a></p>
+
+    @if (!string.IsNullOrEmpty(Model.Feedback))
+    {
+        <div class="feedback ok">@Model.Feedback</div>
+    }
+    @if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <div class="feedback err">@Model.Error</div>
+    }
+
+    <div class="grid">
+        <div class="card">
+            <h2>① 创建任务（即时）</h2>
+            <form method="post" asp-page-handler="Enqueue">
+                <label>任务名（面板中显示）</label>
+                <input asp-for="WorkName" />
+                <label>任务参数（message）</label>
+                <input asp-for="WorkMessage" />
+                <button type="submit">入队</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>② 创建延时任务</h2>
+            <form method="post" asp-page-handler="Schedule">
+                <label>任务名（面板中显示）</label>
+                <input asp-for="ScheduleName" />
+                <label>任务参数（message）</label>
+                <input asp-for="ScheduleMessage" />
+                <label>延迟秒数</label>
+                <input asp-for="ScheduleDelaySeconds" type="number" min="1" />
+                <button type="submit">延时入队</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>③ 创建周期任务（指定周期）</h2>
+            <form method="post" asp-page-handler="Recurring">
+                <label>周期任务 Id（相同 Id 再次提交 = 更新周期）</label>
+                <input asp-for="RecurringId" />
+                <label>任务名（面板中显示）</label>
+                <input asp-for="RecurringName" />
+                <label>任务参数（message）</label>
+                <input asp-for="RecurringMessage" />
+                <label>周期（cron 表达式，本地时区）</label>
+                <select asp-for="Cron">
+                    <option value="* * * * *">每分钟</option>
+                    <option value="*/5 * * * *">每 5 分钟</option>
+                    <option value="*/30 * * * *">每 30 分钟</option>
+                    <option value="0 * * * *">每小时</option>
+                    <option value="0 8 * * *">每天 08:00</option>
+                </select>
+                <button type="submit">保存周期任务</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>⑤ 批量任务测试</h2>
+            <form method="post" asp-page-handler="Batch">
+                <label>批量名（子任务名 = 批量名#序号）</label>
+                <input asp-for="BatchName" />
+                <label>子任务数量</label>
+                <input asp-for="BatchCount" type="number" min="1" max="500" />
+                <label>每个子任务延迟秒数（0 = 立即入队）</label>
+                <input asp-for="BatchDelaySeconds" type="number" min="0" />
+                <label>故意失败的子任务序号（0 = 全部成功）</label>
+                <input asp-for="BatchFailIndex" type="number" min="0" />
+                <button type="submit">创建批量任务</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>⑥ 并发执行测试数据</h2>
+            <form method="post" asp-page-handler="Concurrency">
+                <label>慢任务数量（每个占用一个工作线程）</label>
+                <input asp-for="ConcurrencyCount" type="number" min="1" max="200" />
+                <label>每个任务耗时秒数</label>
+                <input asp-for="ConcurrencySeconds" type="number" min="1" max="600" />
+                <label style="display:flex; align-items:center; gap:6px; color:#24292f">
+                    <input asp-for="ContinuousFeed" type="checkbox" style="width:auto" />
+                    持续供给（每分钟补充一批，并发视图长期有数据）
+                </label>
+                <button type="submit">生成并发测试数据</button>
+            </form>
+            <form method="post" asp-page-handler="StopFeed">
+                <button type="submit" style="background:#57606a">停止持续供给</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>④ Saga 事务测试</h2>
+            <form method="post" asp-page-handler="Saga">
+                <label>saga 名</label>
+                <input asp-for="SagaName" />
+                <label>CorrelationId（留空自动生成；填历史值则命中同一事务）</label>
+                <input asp-for="CorrelationId" placeholder="留空 = 新事务" />
+                <label>故意失败的步骤（触发补偿回滚）</label>
+                <select asp-for="FailStep">
+                    <option value="0">不失败（三步正常完成）</option>
+                    <option value="2">第 2 步失败（s1 被补偿，s3 跳过）</option>
+                    <option value="3">第 3 步失败（s1、s2 被补偿）</option>
+                </select>
+                <button type="submit">启动 saga</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>⑦ Awaiting（连续任务）测试</h2>
+            <form method="post" asp-page-handler="Awaiting">
+                <label>批量名</label>
+                <input asp-for="AwaitingName" />
+                <label>父任务耗时秒数（期间子任务保持 awaiting）</label>
+                <input asp-for="AwaitingParentSeconds" type="number" min="1" max="600" />
+                <label>子任务数量（父任务成功后自动入队）</label>
+                <input asp-for="AwaitingChildCount" type="number" min="1" max="100" />
+                <button type="submit">创建连续任务</button>
+            </form>
+        </div>
+    </div>
+
+    <h1 style="font-size: 16px; margin-top: 24px;">执行记录（最近 50 条，刷新页面更新）</h1>
+    <div class="log">@(Model.ExecLog.Count > 0 ? string.Join("\n", Model.ExecLog) : "暂无执行记录 —— 创建一个任务试试。")</div>
+</body>
+</html>
