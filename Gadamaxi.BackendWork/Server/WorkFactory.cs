@@ -176,7 +176,7 @@ namespace Gadamaxi.BackendWork.Server
 
         /// <summary>
         /// 失败重试次数是否已用尽。用尽之后失败状态不会再被改写为延时重试，工作停在 failed。
-        /// 判定"工作是否已到终态"必须走这里：<see cref="FailedWorkState.Finish"/> 恒为 false，
+        /// 判定"工作是否已到终态"必须走这里：<c>FailedWorkState.Finish</c> 恒为 false，
         /// 只看 Finish 会把终态失败误判成"仍在执行"。
         /// 失败重试（DefaultChangeStatePipeline）与批量项终态回写两处共用该规则。
         /// </summary>

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!--
+    本示例刻意使用 PackageReference（而非 ProjectReference）引用 nuget.org 上已发布的 0.1.0 包，
+    用于验证「消费者从官方源安装后能否正常使用」。
+    核心库只带 linq2db 抽象、不含具体 ADO.NET provider（纯 T4），
+    因此宿主必须自己引用数据库驱动：SQLite → Microsoft.Data.Sqlite。
+  -->
+  <ItemGroup>
+    <PackageReference Include="Gadamaxi.BackendWork" Version="0.1.0" />
+    <PackageReference Include="Gadamaxi.BackendWork.Sql" Version="0.1.0" />
+    <PackageReference Include="Gadamaxi.BackendWork.Mongodb" Version="0.1.0" />
+    <PackageReference Include="Gadamaxi.BackendWork.Dashboard" Version="0.1.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+  </ItemGroup>
+
+</Project>

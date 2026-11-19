@@ -5,8 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- GenerateDocumentationFile 由根目录 Directory.Build.props 统一开启，此处不要再覆盖为 false -->
     <Description>Gadamaxi.BackendWork 监控控制面板：内嵌 DLL 的 Web 面板 + 共享宿主鉴权的 HTTP API</Description>
+
+    <PackageId>Gadamaxi.BackendWork.Dashboard</PackageId>
+    <Title>Gadamaxi.BackendWork 监控面板</Title>
   </PropertyGroup>
 
   <ItemGroup>

@@ -4,6 +4,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+
+    <PackageId>Gadamaxi.BackendWork.Mongodb</PackageId>
+    <Title>Gadamaxi.BackendWork MongoDB 存储</Title>
+    <Description>Gadamaxi.BackendWork 的 MongoDB 存储实现（MongoDB.Driver）。多文档事务需副本集或分片集群，单机 standalone 会降级为逐条写入。</Description>
   </PropertyGroup>
 
   <ItemGroup>

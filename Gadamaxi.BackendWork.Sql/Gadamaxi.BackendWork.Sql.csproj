@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <!-- netstandard2.1 默认 C# 8，Dashboard 仓储等新语法需要显式提升（与核心库同口径） -->
     <LangVersion>latest</LangVersion>
+
+    <PackageId>Gadamaxi.BackendWork.Sql</PackageId>
+    <Title>Gadamaxi.BackendWork 关系库存储</Title>
+    <Description>Gadamaxi.BackendWork 的关系数据库存储实现（linq2db + FluentMigrator），支持 SQLite / SQL Server / MySQL。注意：宿主必须自行引用对应的 ADO.NET provider。</Description>
   </PropertyGroup>
 
   <ItemGroup>

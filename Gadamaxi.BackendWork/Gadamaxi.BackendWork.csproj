@@ -6,6 +6,10 @@
     <!-- record/范围运算符等新语法：netstandard2.1 默认 C# 8，需显式提升；
          record 生成的 init 访问器依赖 IsExternalInit，由 Dashboards/IsExternalInit.cs 垫片提供 -->
     <LangVersion>latest</LangVersion>
+
+    <PackageId>Gadamaxi.BackendWork</PackageId>
+    <Title>Gadamaxi.BackendWork 后台任务框架</Title>
+    <Description>自研后台任务框架核心库：即时/延时/连续任务、Cron 周期任务、批量任务、Saga 分布式事务编排；存储层可插拔（关系库 / MongoDB）。</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Cronos" Version="0.8.3" />

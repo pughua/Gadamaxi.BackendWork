@@ -1,0 +1,131 @@
+@page
+@model WebApplicationSample.Pages.DemoTasksModel
+@{
+    ViewData["Title"] = "任务演示";
+}
+
+<h1 class="mb-3">后台任务演示（NuGet 包 0.1.0）</h1>
+
+<p class="text-muted">
+    本页通过 nuget.org 安装的 <code>Gadamaxi.BackendWork</code> 系列包创建后台任务。
+    打开 <a href="/login?user=alice&amp;role=Admin" target="_blank">监控面板</a> 可查看任务状态。
+</p>
+
+@if (Model.Feedback is not null)
+{
+    <div class="alert alert-success">@Model.Feedback</div>
+}
+@if (Model.Error is not null)
+{
+    <div class="alert alert-danger">@Model.Error</div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">即时任务</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="Enqueue">
+                    <div class="mb-2">
+                        <label class="form-label">任务名</label>
+                        <input asp-for="WorkName" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">消息</label>
+                        <input asp-for="WorkMessage" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">创建即时任务</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">延时任务</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="Schedule">
+                    <div class="mb-2">
+                        <label class="form-label">任务名</label>
+                        <input asp-for="ScheduleName" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">消息</label>
+                        <input asp-for="ScheduleMessage" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">延迟（秒）</label>
+                        <input asp-for="ScheduleDelaySeconds" type="number" min="1" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">创建延时任务</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">周期任务</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="Recurring">
+                    <div class="mb-2">
+                        <label class="form-label">任务 Id</label>
+                        <input asp-for="RecurringId" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">任务名</label>
+                        <input asp-for="RecurringName" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">消息</label>
+                        <input asp-for="RecurringMessage" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Cron 表达式</label>
+                        <input asp-for="Cron" class="form-control" />
+                        <div class="form-text">默认每分钟执行一次</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存周期任务</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">批量任务</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="Batch">
+                    <div class="mb-2">
+                        <label class="form-label">任务名</label>
+                        <input asp-for="BatchName" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">子任务数量</label>
+                        <input asp-for="BatchCount" type="number" min="1" max="500" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">创建批量任务</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">任务执行日志（最近 50 条，内存演示）</div>
+    <div class="card-body">
+        @if (Model.ExecLog.Count == 0)
+        {
+            <p class="text-muted mb-0">暂无执行记录，先创建一个任务试试。</p>
+        }
+        else
+        {
+            <ul class="list-unstyled mb-0 font-monospace small">
+                @foreach (var line in Enumerable.Reverse(Model.ExecLog))
+                {
+                    <li>@line</li>
+                }
+            </ul>
+        }
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <!-- ═══════════ 版本与身份 ═══════════ -->
+  <PropertyGroup>
+    <!-- 发布时用 -p:Version= 覆盖；该属性会沿 ProjectReference 传递，四个包自动同版本 -->
+    <Version Condition="'$(Version)' == ''">0.1.0</Version>
+    <Authors>pughua</Authors>
+    <Company>Gadamaxi</Company>
+    <Copyright>Copyright © Gadamaxi 2026</Copyright>
+
+    <!-- 必须与仓库 LICENSE.txt 一致：Apache-2.0。不要再设 PackageLicenseFile -->
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <!-- 仓库实际在 GitHub（git remote 实测），分支 master -->
+    <RepositoryUrl>https://github.com/pughua/Gadamaxi.BackendWork</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/pughua/Gadamaxi.BackendWork</PackageProjectUrl>
+
+    <PackageTags>background-jobs;job-scheduler;cron;task-queue;batch;saga;distributed-transactions;dotnet</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <!-- ═══════════ 文档、符号、可复现 ═══════════ -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- 存量代码有 CS86xx nullable 警告；开启文档生成会新增 CS1591/CS1573。
+         只屏蔽这几条，且不要开 TreatWarningsAsErrors -->
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- 开启后需为所有项目重新执行一次 restore（force evaluate）以生成锁文件 -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
+  <!-- SourceLink：PublishRepositoryUrl 只写 nuspec，真正能步进源码要靠这个包。
+       仓库在 GitHub，用官方 GitHub 提供程序；PrivateAssets=all 不会传递给消费方 -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- README 与 LICENSE 打进包根。
+       LICENSE.txt 作为普通文件附带（Apache-2.0 §4(a) 要求随分发提供许可文本），
+       不作为 license 元数据，因此不能同时设 PackageLicenseFile -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)README.md')">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)LICENSE.txt" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <!-- 示例与测试宿主一律不打包。用显式列表，避免命名规则误伤未来的项目 -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'ConsoleAppTest'
+                         Or '$(MSBuildProjectName)' == 'WebApplicationTest'
+                         Or '$(MSBuildProjectName)' == 'RecurringTest'
+                         Or '$(MSBuildProjectName)' == 'Gadamaxi.BackendWork.Tests'">
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>
